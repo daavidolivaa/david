@@ -1,0 +1,19 @@
+version: '3.1'
+
+# https://hub.docker.com/r/gvenzl/oracle-xe
+# VSC Extensión: Oracle Developer Tools for VS Code (SQL and PLSQL)
+# Conexión: Localhost - usuario system/secret
+services:
+  dboracle:
+    image: gvenzl/oracle-xe:slim
+    ports:
+      - '1521:1521'
+    expose:
+      - '1521'
+    env_file:
+      - ".env"
+    environment:
+      APP_USER : ${ORACLE_USER}
+      APP_USER_PASSWORD : ${ORACLE_USER_PASSWORD}
+      ORACLE_PASSWORD : ${ORACLE_PASSWORD}
+      ORACLE_DATABASE : ${ORACLE_DATABASE}
