@@ -1,4 +1,4 @@
-package es.etg.dam;
+package es.etg.dam.SQLite;
 
 import java.io.File;
 import java.net.URL;
@@ -18,7 +18,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     private final Connection conn;
 
     public InstitutoSQLiteDAOImp() throws Exception {
-        URL resource = InstitutoSQLiteDAOImp.class.getResource(DATABASE_NAME);
+        URL resource = InstitutoSQLiteDAOImp.class.getResource("/es/etg/dam/Instituto.db");
         String path = new File(resource.toURI()).getAbsolutePath();
         String url = String.format(JDBC_URL, path);
         conn = DriverManager.getConnection(url);
@@ -66,7 +66,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         st.close();
     }
 
-    //INSERTAR
+    // INSERTAR
     @Override
     public int insertar(Alumno a) throws SQLException {
         int numRegistrosActualizados = 0;
@@ -82,7 +82,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         return numRegistrosActualizados;
     }
 
-    //INSERTAR LISTA DE ALUMNOS
+    // INSERTAR LISTA DE ALUMNOS
     @Override
     public int insertar(List<Alumno> alumnos) throws SQLException {
         final String sql = "INSERT INTO alumno VALUES (?, ?, ?)";
@@ -91,7 +91,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
             ps.setString(1, a.getNombre());
             ps.setString(2, a.getApellido());
             ps.setInt(3, a.getEdad());
-            //Añade a la lista de ejecución ese insert
+            // Añade a la lista de ejecución ese insert
             ps.addBatch();
         }
         conn.setAutoCommit(false);
@@ -101,7 +101,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         return alumnos.size();
     }
 
-    //ACTUALIZAR
+    // ACTUALIZAR
     @Override
     public int actualizar(Alumno a) throws SQLException {
         int numRegistrosActualizados = 0;
@@ -117,7 +117,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         return numRegistrosActualizados;
     }
 
-    //BORRAR ALUMNO
+    // BORRAR ALUMNO
     @Override
     public int borrar(Alumno a) throws SQLException {
         int numRegistrosActualizados = 0;

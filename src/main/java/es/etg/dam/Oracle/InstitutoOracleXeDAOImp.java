@@ -1,7 +1,10 @@
-package es.etg.dam;
+package es.etg.dam.Oracle;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import es.etg.dam.SQLite.Alumno;
+import es.etg.dam.SQLite.InstitutoDAO;
 
 public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 

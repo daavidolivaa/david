@@ -1,4 +1,4 @@
-package es.etg.dam;
+package es.etg.dam.SQLite;
 
 public class Alumno {
 
@@ -7,12 +7,9 @@ public class Alumno {
     private int edad;
 
     public Alumno(String nombre, String apellido, int edad) {
-        this.nombre
-                = nombre;
-        this.apellido
-                = apellido;
-        this.edad
-                = edad;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.edad = edad;
     }
 
     public String getNombre() {
@@ -20,8 +17,7 @@ public class Alumno {
     }
 
     public void setNombre(String nombre) {
-        this.nombre
-                = nombre;
+        this.nombre = nombre;
     }
 
     public String getApellido() {
@@ -29,8 +25,7 @@ public class Alumno {
     }
 
     public void setApellido(String apellido) {
-        this.apellido
-                = apellido;
+        this.apellido = apellido;
     }
 
     public int getEdad() {
@@ -38,7 +33,6 @@ public class Alumno {
     }
 
     public void setEdad(int edad) {
-        this.edad
-                = edad;
+        this.edad = edad;
     }
 }

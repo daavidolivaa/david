@@ -1,8 +1,11 @@
-package es.etg.dam;
+package es.etg.dam.Mock;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import es.etg.dam.SQLite.Alumno;
+import es.etg.dam.SQLite.InstitutoDAO;
 
 public class InstitutoMockDAOImp implements InstitutoDAO {
 

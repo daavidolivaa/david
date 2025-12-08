@@ -1,4 +1,8 @@
-/home/debian/Desktop/New/david/src/main/java/es/etg/dam/Alumno.java
-/home/debian/Desktop/New/david/src/main/java/es/etg/dam/InstitutoDAO.java
-/home/debian/Desktop/New/david/src/main/java/es/etg/dam/InstitutoSQLiteDAOImp.java
-/home/debian/Desktop/New/david/src/main/java/es/etg/dam/Main.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/Alumno.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/InstitutoDAO.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/InstitutoDAOFactory.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/InstitutoMockDAOImp.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/InstitutoOracleXeDAOImp.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/InstitutoSQLiteDAOImp.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/Main.java
+/home/debian/Desktop/AccesoDatos/david/src/main/java/es/etg/dam/Modo.java
