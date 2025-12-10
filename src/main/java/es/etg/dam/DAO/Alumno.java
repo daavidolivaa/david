@@ -1,4 +1,4 @@
-package es.etg.dam.SQLite;
+package es.etg.dam.DAO;
 
 public class Alumno {
 

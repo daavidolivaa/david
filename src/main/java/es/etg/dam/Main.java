@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import es.etg.dam.SQLite.Alumno;
-import es.etg.dam.SQLite.InstitutoDAO;
-import es.etg.dam.SQLite.InstitutoDAOFactory;
+import es.etg.dam.DAO.Alumno;
+import es.etg.dam.DAO.InstitutoDAO;
+import es.etg.dam.DAO.InstitutoDAOFactory;
 
 public class Main {
 

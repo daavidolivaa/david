@@ -1,13 +1,12 @@
-package es.etg.dam.Mock;
+package es.etg.dam.DAO.Oracle;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import es.etg.dam.SQLite.Alumno;
-import es.etg.dam.SQLite.InstitutoDAO;
+import es.etg.dam.DAO.Alumno;
+import es.etg.dam.DAO.InstitutoDAO;
 
-public class InstitutoMockDAOImp implements InstitutoDAO {
+public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 
     @Override
     public void crearTablaAlumno() throws Exception {
@@ -23,10 +22,8 @@ public class InstitutoMockDAOImp implements InstitutoDAO {
 
     @Override
     public List<Alumno> listarAlumnos() throws SQLException {
-        List<Alumno> alumnos = new ArrayList<>();
-        alumnos.add(new Alumno("test1", "test1", 1));
-        alumnos.add(new Alumno("test2", "test2", 2));
-        return alumnos;
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarAlumnos'");
     }
 
     @Override

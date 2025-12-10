@@ -1,4 +1,4 @@
-package es.etg.dam.SQLite;
+package es.etg.dam.DAO;
 
 import java.sql.SQLException;
 import java.util.List;

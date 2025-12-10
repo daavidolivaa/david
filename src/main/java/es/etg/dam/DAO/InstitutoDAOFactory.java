@@ -1,8 +1,9 @@
-package es.etg.dam.SQLite;
+package es.etg.dam.DAO;
 
-import es.etg.dam.Mock.InstitutoMockDAOImp;
+import es.etg.dam.DAO.Mock.InstitutoMockDAOImp;
+import es.etg.dam.DAO.Oracle.InstitutoOracleXeDAOImp;
+import es.etg.dam.DAO.SQLite.InstitutoSQLiteDAOImp;
 import es.etg.dam.Modo;
-import es.etg.dam.Oracle.InstitutoOracleXeDAOImp;
 
 public class InstitutoDAOFactory {
 

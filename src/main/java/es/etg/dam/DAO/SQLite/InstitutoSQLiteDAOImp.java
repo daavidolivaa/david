@@ -1,4 +1,4 @@
-package es.etg.dam.SQLite;
+package es.etg.dam.DAO.SQLite;
 
 import java.io.File;
 import java.net.URL;
@@ -10,15 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.etg.dam.DAO.Alumno;
+import es.etg.dam.DAO.InstitutoDAO;
+
 public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
-    private static final String DATABASE_NAME = "Instituto.db";
+    private static final String DATABASE_NAME = "/es/etg/dam/Instituto.db";
     private static final String JDBC_URL = "jdbc:sqlite:%s";
 
     private final Connection conn;
 
     public InstitutoSQLiteDAOImp() throws Exception {
-        URL resource = InstitutoSQLiteDAOImp.class.getResource("/es/etg/dam/Instituto.db");
+        URL resource = InstitutoSQLiteDAOImp.class.getResource(DATABASE_NAME);
         String path = new File(resource.toURI()).getAbsolutePath();
         String url = String.format(JDBC_URL, path);
         conn = DriverManager.getConnection(url);
