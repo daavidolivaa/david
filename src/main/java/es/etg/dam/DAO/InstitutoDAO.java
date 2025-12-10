@@ -5,9 +5,15 @@ import java.util.List;
 
 public interface InstitutoDAO {
 
-    public void crearTablaAlumno() throws Exception;
+    // Tablas
+
+    public void crearTabla() throws Exception;
 
     public void eliminarTablaAlumno() throws Exception;
+
+    public void eliminarTablaCurso() throws Exception;
+
+    // Alumnos
 
     public List<Alumno> listarAlumnos() throws SQLException;
 
@@ -18,4 +24,14 @@ public interface InstitutoDAO {
     public int actualizar(Alumno a) throws SQLException;
 
     public int borrar(Alumno a) throws SQLException;
+
+    // Cursos
+
+    int insertarCurso(Curso c) throws Exception;
+
+    List<Curso> listarCursos() throws Exception;
+
+    List<String> listarAlumnoConCursos() throws Exception;
+
+    List<Alumno> buscarAlumnoPorNombre(String nombre) throws Exception;
 }

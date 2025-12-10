@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import es.etg.dam.DAO.Alumno;
+import es.etg.dam.DAO.Curso;
 import es.etg.dam.DAO.InstitutoDAO;
 import es.etg.dam.DAO.InstitutoDAOFactory;
 
@@ -70,16 +71,25 @@ public class Main {
 
         while (opcion != 0) {
 
-            System.out.println("\n===== MENÚ SQLITE =====");
-            System.out.println("1. Listar alumnos");
-            System.out.println("2. Insertar alumno");
-            System.out.println("3. Actualizar alumno");
-            System.out.println("4. Borrar alumno");
-            System.out.println("5. Crear tabla alumnos");
-            System.out.println("6. Eliminar tabla alumnos");
-            System.out.println("7. Insertar lista de alumnos");
+            System.out.println("\n=========== MENÚ SQLITE ===========");
+            System.out.println("1. Crear tablas");
+            System.out.println("2. Listar alumnos");
+            System.out.println("3. Insertar alumno");
+            System.out.println("4. Actualizar alumno");
+            System.out.println("5. Borrar alumno");
+            System.out.println("6. Insertar lista de alumnos");
+
+            System.out.println("7. Insertar curso");
+            System.out.println("8. Listar cursos");
+
+            System.out.println("9. Listar alumnos con cursos");
+            System.out.println("10. Buscar alumno por nombre");
+
+            System.out.println("11. Eliminar tabla alumno");
+            System.out.println("12. Eliminar tabla curso");
+
             System.out.println("0. Volver");
-            System.out.print("Elige una opción: ");
+            System.out.print("Elige opción: ");
 
             opcion = Integer.parseInt(sc.nextLine());
 
@@ -87,69 +97,68 @@ public class Main {
 
                 switch (opcion) {
 
+                    // -------- ALUMNOS --------
+
                     case 1 -> {
-                        System.out.println("\n--- LISTADO DE ALUMNOS ---");
-                        for (Alumno a : dao.listarAlumnos()) {
-                            System.out.println(a.getNombre() + " "
-                                    + a.getApellido() + " "
-                                    + a.getEdad());
-                        }
+                        dao.crearTabla();
+                        System.out.println("Tablas creadas.");
                     }
 
                     case 2 -> {
-                        System.out.println("\n--- INSERTAR ALUMNO ---");
-                        System.out.print("Nombre: ");
-                        String nombre = sc.nextLine();
-
-                        System.out.print("Apellido: ");
-                        String apellido = sc.nextLine();
-
-                        System.out.print("Edad: ");
-                        int edad = Integer.parseInt(sc.nextLine());
-
-                        dao.insertar(new Alumno(nombre, apellido, edad));
-                        System.out.println("Alumno insertado correctamente.");
+                        System.out.println("\n--- LISTADO DE ALUMNOS ---");
+                        for (Alumno a : dao.listarAlumnos()) {
+                            System.out.println(a.getNombre() +
+                                    " " + a.getApellido() +
+                                    " " + a.getEdad());
+                        }
                     }
 
                     case 3 -> {
-                        System.out.println("\n--- ACTUALIZAR ALUMNO ---");
+                        System.out.println("\n--- INSERTAR ALUMNO ---");
+
                         System.out.print("Nombre: ");
-                        String nombre = sc.nextLine();
+                        String n = sc.nextLine();
 
                         System.out.print("Apellido: ");
-                        String apellido = sc.nextLine();
+                        String ap = sc.nextLine();
 
-                        System.out.print("Nueva edad: ");
-                        int edad = Integer.parseInt(sc.nextLine());
+                        System.out.print("Edad: ");
+                        int e = Integer.parseInt(sc.nextLine());
 
-                        dao.actualizar(new Alumno(nombre, apellido, edad));
-                        System.out.println("Alumno actualizado.");
+                        dao.insertar(new Alumno(n, ap, e));
+                        System.out.println("Alumno insertado.");
                     }
 
                     case 4 -> {
-                        System.out.println("\n--- BORRAR ALUMNO ---");
+                        System.out.println("\n--- ACTUALIZAR ALUMNO ---");
 
                         System.out.print("Nombre: ");
-                        String nombre = sc.nextLine();
+                        String n = sc.nextLine();
 
                         System.out.print("Apellido: ");
-                        String apellido = sc.nextLine();
+                        String ap = sc.nextLine();
 
-                        dao.borrar(new Alumno(nombre, apellido, 0));
-                        System.out.println("Alumno eliminado.");
+                        System.out.print("Nueva edad: ");
+                        int e = Integer.parseInt(sc.nextLine());
+
+                        dao.actualizar(new Alumno(n, ap, e));
+                        System.out.println("Alumno actualizado.");
                     }
 
                     case 5 -> {
-                        dao.crearTablaAlumno();
-                        System.out.println("Tabla creada.");
+                        System.out.println("\n--- BORRAR ALUMNO ---");
+
+                        System.out.print("Nombre: ");
+                        String n = sc.nextLine();
+
+                        System.out.print("Apellido: ");
+                        String ap = sc.nextLine();
+
+                        dao.borrar(new Alumno(n, ap, 0));
+                        System.out.println("Alumno borrado.");
                     }
 
                     case 6 -> {
-                        dao.eliminarTablaAlumno();
-                        System.out.println("Tabla eliminada.");
-                    }
-
-                    case 7 -> {
 
                         System.out.print("¿Cuántos alumnos?: ");
                         int cantidad = Integer.parseInt(sc.nextLine());
@@ -176,9 +185,84 @@ public class Main {
                         System.out.println("Lista insertada.");
                     }
 
-                    case 0 -> System.out.println("Volviendo al menú principal...");
+                    // -------- CURSOS --------
 
-                    default -> System.out.println("Opción inválida.");
+                    case 7 -> {
+
+                        System.out.println("\n--- INSERTAR CURSO ---");
+
+                        System.out.print("Nombre del curso: ");
+                        String c = sc.nextLine();
+
+                        System.out.print("Descripción: ");
+                        String d = sc.nextLine();
+
+                        System.out.print("Nombre alumno: ");
+                        String na = sc.nextLine();
+
+                        System.out.print("Apellido alumno: ");
+                        String aa = sc.nextLine();
+
+                        dao.insertarCurso(new Curso(c, d, na, aa));
+
+                        System.out.println("Curso insertado.");
+                    }
+
+                    case 8 -> {
+                        System.out.println("\n--- LISTADO DE CURSOS ---");
+
+                        for (Curso c : dao.listarCursos()) {
+                            System.out.println(
+                                    "ID: " + c.getId() +
+                                            " | Curso: " + c.getNombre() +
+                                            " | Alumno: " +
+                                            c.getAlumnoNombre() + " " +
+                                            c.getAlumnoApellido());
+                        }
+                    }
+
+                    // -------- CONSULTAS --------
+
+                    case 9 -> {
+                        System.out.println("\n--- ALUMNOS CON CURSOS ---");
+
+                        for (String s : dao.listarAlumnoConCursos()) {
+                            System.out.println(s);
+                        }
+                    }
+
+                    case 10 -> {
+                        System.out.println("\n--- BUSCAR ALUMNO ---");
+
+                        System.out.print("Nombre a buscar: ");
+                        String n = sc.nextLine();
+
+                        for (Alumno a : dao.buscarAlumnoPorNombre(n)) {
+                            System.out.println(
+                                    a.getNombre() + " "
+                                            + a.getApellido()
+                                            + " " + a.getEdad());
+                        }
+                    }
+
+                    // -------- BORRAR TABLAS --------
+
+                    case 11 -> {
+                        dao.eliminarTablaAlumno();
+                        System.out.println("Tabla alumno eliminada.");
+                    }
+
+                    case 12 -> {
+                        dao.eliminarTablaCurso();
+                        System.out.println("Tabla curso eliminada.");
+                    }
+
+                    case 0 ->
+                        System.out.println(
+                                "Volviendo al menú principal...");
+
+                    default ->
+                        System.out.println("Opción incorrecta.");
                 }
 
             } catch (Exception e) {
@@ -211,7 +295,7 @@ public class Main {
                 switch (opcion) {
 
                     case 1 -> {
-                        dao.crearTablaAlumno();
+                        dao.crearTabla();
                         System.out.println("Tabla creada en Oracle");
                     }
 
