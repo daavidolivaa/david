@@ -84,4 +84,10 @@ public class InstitutoMockDAOImp implements InstitutoDAO {
         throw new UnsupportedOperationException("Unimplemented method 'buscarAlumnoPorNombre'");
     }
 
+    @Override
+    public int borrarCurso(int id) throws Exception {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'borrarCurso'");
+    }
+
 }

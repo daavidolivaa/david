@@ -34,4 +34,6 @@ public interface InstitutoDAO {
     List<String> listarAlumnoConCursos() throws Exception;
 
     List<Alumno> buscarAlumnoPorNombre(String nombre) throws Exception;
+
+    int borrarCurso(int id) throws Exception;
 }

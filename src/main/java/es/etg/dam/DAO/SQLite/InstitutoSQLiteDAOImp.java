@@ -28,32 +28,35 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         conn = DriverManager.getConnection(url);
     }
 
-    // ---------------- TABLAS -----------------------
+    // ================= TABLAS ===================
 
     // CREAR TABLA
     @Override
     public void crearTabla() throws SQLException {
 
-        final String sqlAlumno = "CREATE TABLE IF NOT EXISTS curso (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nombre TEXT NOT NULL," +
-                "descripcion TEXT," +
-                "alumno_nombre TEXT NOT NULL," +
-                "FOREIGN KEY (alumno_nombre) REFERENCES alumno(nombre))";
-
-        String sqlCurso = """
-                CREATE TABLE IF NOT EXISTS curso(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nombre TEXT,
-                    descripcion TEXT,
-                    alumno_nombre TEXT,
-                    alumno_apellido TEXT,
-                    FOREIGN KEY(alumno_nombre, alumno_apellido)
-                    REFERENCES alumno(nombre,apellido))
+        String tablaAlumno = """
+                CREATE TABLE IF NOT EXISTS alumno(
+                    nombre TEXT NOT NULL,
+                    apellido TEXT NOT NULL,
+                    edad INTEGER,
+                    PRIMARY KEY(nombre, apellido)
+                );
                 """;
 
-        PreparedStatement ps1 = conn.prepareStatement(sqlAlumno);
-        PreparedStatement ps2 = conn.prepareStatement(sqlCurso);
+        String tablaCurso = """
+                CREATE TABLE IF NOT EXISTS curso(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL,
+                    descripcion TEXT,
+                    alumno_nombre TEXT NOT NULL,
+                    alumno_apellido TEXT NOT NULL,
+                    FOREIGN KEY(alumno_nombre, alumno_apellido)
+                        REFERENCES alumno(nombre, apellido)
+                );
+                """;
+
+        PreparedStatement ps1 = conn.prepareStatement(tablaAlumno);
+        PreparedStatement ps2 = conn.prepareStatement(tablaCurso);
         ps1.executeUpdate();
         ps2.executeUpdate();
         ps1.close();
@@ -63,22 +66,22 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     // ELIMINAR TABLA ALUMNOS
     @Override
     public void eliminarTablaAlumno() throws Exception {
-        String sql = "DROP TABLE alumno";
-        PreparedStatement st = conn.prepareStatement(sql);
-        st.execute();
-        st.close();
+        String query = "DROP TABLE alumno";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.execute();
+        ps.close();
     }
 
     // ELIMINAR TABLA CURSO
     @Override
     public void eliminarTablaCurso() throws Exception {
-        String sql = "DROP TABLE curso";
-        PreparedStatement st = conn.prepareStatement(sql);
-        st.execute();
-        st.close();
+        String query = "DROP TABLE curso";
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.execute();
+        ps.close();
     }
 
-    // ---------------- ALUMNOS -----------------------
+    // ================== ALUMNOS ===================
 
     // LISTAR ALUMNOS
     @Override
@@ -94,8 +97,8 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
             String apellido = rs.getString("apellido");
             int edad = rs.getInt("edad");
 
-            Alumno a = new Alumno(nombre, apellido, edad);
-            alumnos.add(a);
+            Alumno alumno = new Alumno(nombre, apellido, edad);
+            alumnos.add(alumno);
         }
         rs.close();
         ps.close();
@@ -106,14 +109,14 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
     // INSERTAR
     @Override
-    public int insertar(Alumno a) throws SQLException {
+    public int insertar(Alumno alumno) throws SQLException {
         int numRegistrosActualizados = 0;
-        final String sql = "INSERT INTO alumno VALUES (?, ?, ?)";
+        final String query = "INSERT INTO alumno VALUES (?, ?, ?)";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, a.getNombre());
-        ps.setString(2, a.getApellido());
-        ps.setInt(3, a.getEdad());
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, alumno.getNombre());
+        ps.setString(2, alumno.getApellido());
+        ps.setInt(3, alumno.getEdad());
         numRegistrosActualizados = ps.executeUpdate();
 
         ps.close();
@@ -123,13 +126,13 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     // INSERTAR LISTA DE ALUMNOS
     @Override
     public int insertar(List<Alumno> alumnos) throws SQLException {
-        final String sql = "INSERT INTO alumno VALUES (?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        for (Alumno a : alumnos) {
-            ps.setString(1, a.getNombre());
-            ps.setString(2, a.getApellido());
-            ps.setInt(3, a.getEdad());
-            // Añade a la lista de ejecución ese insert
+        final String query = "INSERT INTO alumno VALUES (?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(query);
+        for (Alumno alumno : alumnos) {
+            ps.setString(1, alumno.getNombre());
+            ps.setString(2, alumno.getApellido());
+            ps.setInt(3, alumno.getEdad());
+
             ps.addBatch();
         }
         conn.setAutoCommit(false);
@@ -141,14 +144,14 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
     // ACTUALIZAR
     @Override
-    public int actualizar(Alumno a) throws SQLException {
+    public int actualizar(Alumno alumno) throws SQLException {
         int numRegistrosActualizados = 0;
-        final String sql = "UPDATE alumno SET edad = ? WHERE nombre = ? AND apellido = ?";
+        final String query = "UPDATE alumno SET edad = ? WHERE nombre = ? AND apellido = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, a.getEdad());
-        ps.setString(2, a.getNombre());
-        ps.setString(3, a.getApellido());
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, alumno.getEdad());
+        ps.setString(2, alumno.getNombre());
+        ps.setString(3, alumno.getApellido());
         numRegistrosActualizados = ps.executeUpdate();
 
         ps.close();
@@ -157,23 +160,25 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
     // BORRAR ALUMNO
     @Override
-    public int borrar(Alumno a) throws SQLException {
+    public int borrar(Alumno alumno) throws SQLException {
         int numRegistrosActualizados = 0;
-        final String sql = "DELETE FROM alumno WHERE nombre = ? AND apellido = ?";
+        final String query = "DELETE FROM alumno WHERE nombre = ? AND apellido = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, a.getNombre());
-        ps.setString(2, a.getApellido());
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setString(1, alumno.getNombre());
+        ps.setString(2, alumno.getApellido());
         numRegistrosActualizados = ps.executeUpdate();
 
         ps.close();
         return numRegistrosActualizados;
     }
 
-    // ---------------- CURSOS -----------------------
+    // =================== CURSOS ====================
+
+    // INSERTAR CURSO
 
     @Override
-    public int insertarCurso(Curso c) throws SQLException {
+    public int insertarCurso(Curso curso) throws SQLException {
 
         PreparedStatement ps = conn.prepareStatement("""
                     INSERT INTO curso(nombre, descripcion,
@@ -181,13 +186,14 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
                     VALUES (?,?,?,?)
                 """);
 
-        ps.setString(1, c.getNombre());
-        ps.setString(2, c.getDescripcion());
-        ps.setString(3, c.getAlumnoNombre());
-        ps.setString(4, c.getAlumnoApellido());
+        ps.setString(1, curso.getNombre());
+        ps.setString(3, curso.getAlumnoNombre());
+        ps.setString(4, curso.getAlumnoApellido());
 
         return ps.executeUpdate();
     }
+
+    // LISTAR CURSOS
 
     @Override
     public List<Curso> listarCursos() throws Exception {
@@ -201,11 +207,10 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         while (rs.next()) {
             int id = rs.getInt("id");
             String nombre = rs.getString("nombre");
-            String descripcion = rs.getString("descripcion");
-            String nombreAlumno = rs.getString("nombre del alumno");
-            String apellidoAlumno = rs.getString("apellido del alumno");
+            String nombreAlumno = rs.getString("alumno_nombre");
+            String apellidoAlumno = rs.getString("alumno_apellido");
 
-            Curso a = new Curso(id, nombre, descripcion, nombreAlumno, apellidoAlumno);
+            Curso a = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
             cursos.add(a);
         }
         rs.close();
@@ -215,12 +220,14 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
     }
 
+    // LISTAR ALUMNOS CON CURSOS
+
     public List<String> listarAlumnoConCursos() throws Exception {
 
         final String query = """
                 SELECT alumno.nombre,
-                       alumno.apellido,
-                       curso.nombre AS curso
+                    alumno.apellido,
+                    curso.nombre AS curso
                 FROM alumno
                 JOIN curso
                     ON alumno.nombre = curso.alumno_nombre
@@ -249,6 +256,8 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         return lista;
     }
 
+    // BUSCAR ALUMNO POR NOMBRE
+
     @Override
     public List<Alumno> buscarAlumnoPorNombre(String nombre) throws Exception {
 
@@ -275,5 +284,21 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
         ps.close();
 
         return lista;
+    }
+
+    // BORRAR CURSO
+
+    @Override
+    public int borrarCurso(int id) throws Exception {
+
+        final String query = "DELETE FROM curso WHERE id = ?";
+
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, id);
+
+        int cursos = ps.executeUpdate();
+
+        ps.close();
+        return cursos;
     }
 }
