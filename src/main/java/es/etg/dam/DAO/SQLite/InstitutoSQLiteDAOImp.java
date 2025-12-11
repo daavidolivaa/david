@@ -29,7 +29,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // ================= TABLAS ===================
-
     // CREAR TABLA
     @Override
     public void crearTabla() throws SQLException {
@@ -82,7 +81,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // ================== ALUMNOS ===================
-
     // LISTAR ALUMNOS
     @Override
     public List<Alumno> listarAlumnos() throws SQLException {
@@ -174,9 +172,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // =================== CURSOS ====================
-
     // INSERTAR CURSO
-
     @Override
     public int insertarCurso(Curso curso) throws SQLException {
 
@@ -194,7 +190,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // LISTAR CURSOS
-
     @Override
     public List<Curso> listarCursos() throws Exception {
 
@@ -221,7 +216,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // LISTAR ALUMNOS CON CURSOS
-
     public List<String> listarAlumnoConCursos() throws Exception {
 
         final String query = """
@@ -257,7 +251,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // BUSCAR ALUMNO POR NOMBRE
-
     @Override
     public List<Alumno> buscarAlumnoPorNombre(String nombre) throws Exception {
 
@@ -276,8 +269,8 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
             String ape = rs.getString("apellido");
             int edad = rs.getInt("edad");
 
-            Alumno a = new Alumno(nom, ape, edad);
-            lista.add(a);
+            Alumno alumno = new Alumno(nom, ape, edad);
+            lista.add(alumno);
         }
 
         rs.close();
@@ -287,7 +280,6 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     }
 
     // BORRAR CURSO
-
     @Override
     public int borrarCurso(int id) throws Exception {
 
