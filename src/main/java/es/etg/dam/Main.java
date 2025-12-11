@@ -15,25 +15,16 @@ public class Main {
 
         try (Scanner sc = new Scanner(System.in)) {
 
-            // MENÚ 1 -> SELECCIÓN DE CONEXIÓN
             Modo modo = seleccionarModo(sc);
 
             if (modo == null) {
-                System.out.println("Opción inválida. Saliendo...");
+                System.out.println("Opcion invalida. Saliendo...");
                 return;
             }
 
-            // Obtiene el DAO según el modo
             InstitutoDAO dao = InstitutoDAOFactory.obtenerDAO(modo);
 
-            // Ejecuta menú correspondiente
-            if (modo == Modo.SQLITE) {
-                menuSQLite(sc, dao);
-            } else if (modo == Modo.ORACLE) {
-                menuOracle(sc, dao);
-            } else {
-                System.out.println("Modo MOCK aún no implementado.");
-            }
+            menuUnico(sc, dao);
 
         } catch (Exception e) {
             System.err.println("Error general: " + e.getMessage());
@@ -41,35 +32,36 @@ public class Main {
         }
     }
 
-    // MENÚ PRINCIPAL - ELECCIÓN DE BD
-
+    // ============= MENÚ DE SELECCIÓN BD =============
     private static Modo seleccionarModo(Scanner sc) {
-
-        System.out.println("\n===== SELECCIONA TIPO DE CONEXIÓN =====");
+        System.out.println("\n===== SELECCIONA TIPO DE CONEXION =====");
         System.out.println("1. Mock");
         System.out.println("2. SQLite");
         System.out.println("3. Oracle");
-        System.out.print("Opción: ");
+        System.out.print("Opcion: ");
 
         int opcion = Integer.parseInt(sc.nextLine());
 
         return switch (opcion) {
-            case 1 -> Modo.MOCK;
-            case 2 -> Modo.SQLITE;
-            case 3 -> Modo.ORACLE;
-            default -> null;
+            case 1 ->
+                Modo.MOCK;
+            case 2 ->
+                Modo.SQLITE;
+            case 3 ->
+                Modo.ORACLE;
+            default ->
+                null;
         };
     }
 
-    // MENÚ SQLITE
-
-    private static void menuSQLite(Scanner sc, InstitutoDAO dao) {
+    // ============= MENÚ =============
+    private static void menuUnico(Scanner sc, InstitutoDAO dao) {
 
         int opcion = -1;
 
         while (opcion != 0) {
 
-            System.out.println("\n=========== MENÚ SQLITE ===========");
+            System.out.println("\n=========== MENU ===========");
             System.out.println("1. Crear tablas");
 
             System.out.println("\n2. Insertar alumno");
@@ -90,23 +82,26 @@ public class Main {
             System.out.println("13. Eliminar tabla curso");
 
             System.out.println("\n0. Volver");
-            System.out.print("Elige opción: ");
+            System.out.print("Elige opcion: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            try {
+                opcion = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Introduce un número valido.");
+                continue;
+            }
 
             try {
 
                 switch (opcion) {
 
-                    // CREAR TABLA
-
+                    // ============= CREAR TABLA =============
                     case 1 -> {
                         dao.crearTabla();
                         System.out.println("Tablas creadas.");
                     }
 
-                    // INSERTAR ALUMNO
-
+                    // ============= INSERTAR ALUMNO =============
                     case 2 -> {
                         System.out.println("\n--- INSERTAR ALUMNO ---");
 
@@ -123,11 +118,10 @@ public class Main {
                         System.out.println("Alumno insertado.");
                     }
 
-                    // INSERTAR LISTA DE ALUMNOS
-
+                    // ============= INSERTAR LISTA DE ALUMNOS =============
                     case 3 -> {
 
-                        System.out.print("¿Cuántos alumnos?: ");
+                        System.out.print("¿Cuantos alumnos?: ");
                         int cantidad = Integer.parseInt(sc.nextLine());
 
                         List<Alumno> lista = new ArrayList<>();
@@ -152,8 +146,7 @@ public class Main {
                         System.out.println("Lista insertada.");
                     }
 
-                    // INSERTAR CURSO
-
+                    // ============= INSERTAR CURSO =============
                     case 4 -> {
 
                         System.out.println("\n--- INSERTAR CURSO ---");
@@ -172,8 +165,7 @@ public class Main {
                         System.out.println("Curso insertado.");
                     }
 
-                    // LISTAR ALUMNOS
-
+                    // ============= LISTA DE ALUMNOS =============
                     case 5 -> {
                         System.out.println("\n--- LISTADO DE ALUMNOS ---");
                         for (Alumno alumno : dao.listarAlumnos()) {
@@ -182,8 +174,7 @@ public class Main {
                         }
                     }
 
-                    // LISTADO DE CURSOS
-
+                    // ============= LISTA DE CURSOS =============
                     case 6 -> {
                         System.out.println("\n--- LISTADO DE CURSOS ---");
 
@@ -193,8 +184,7 @@ public class Main {
                         }
                     }
 
-                    // LISTADO DE ALUMNOS CON CURSOS
-
+                    // ============= LISTA DE ALUMNOS CON CURSOS =============
                     case 7 -> {
                         System.out.println("\n--- ALUMNOS CON CURSOS ---");
 
@@ -203,8 +193,7 @@ public class Main {
                         }
                     }
 
-                    // ACTUALIZAR ALUMNO
-
+                    // ============= ACTUALIZAR EDAD ALUMNO =============
                     case 8 -> {
                         System.out.println("\n--- ACTUALIZAR ALUMNO ---");
 
@@ -221,8 +210,7 @@ public class Main {
                         System.out.println("Alumno actualizado.");
                     }
 
-                    // BUSCAR ALUMNO POR NOMBRE
-
+                    // ============= BUSCAR ALUMNO POR NOMBRE =============
                     case 9 -> {
                         System.out.println("\n--- BUSCAR ALUMNO ---");
 
@@ -230,13 +218,11 @@ public class Main {
                         String nombreBuscar = sc.nextLine();
 
                         for (Alumno alumno : dao.buscarAlumnoPorNombre(nombreBuscar)) {
-                            System.out
-                                    .println(alumno.getNombre() + " " + alumno.getApellido() + " " + alumno.getEdad());
+                            System.out.println(alumno.getNombre() + " " + alumno.getApellido() + " " + alumno.getEdad());
                         }
                     }
 
-                    // BORRAR ALUMNO
-
+                    // ============= BORRAR ALUMNO =============
                     case 10 -> {
                         System.out.println("\n--- BORRAR ALUMNO ---");
 
@@ -250,8 +236,7 @@ public class Main {
                         System.out.println("Alumno borrado.");
                     }
 
-                    // BORRAR CURSO
-
+                    // ============= BORRAR CURSO =============
                     case 11 -> {
                         System.out.println("\n--- BORRAR CURSO ---");
 
@@ -260,80 +245,35 @@ public class Main {
 
                         int borrados = dao.borrarCurso(id);
 
-                        if (borrados > 0)
+                        if (borrados > 0) {
                             System.out.println("Curso eliminado correctamente.");
-                        else
+                        } else {
                             System.out.println("No existe un curso con ese ID.");
+                        }
                     }
 
-                    // BORRAR TABLAS
-
+                    // ============= ELIMINAR TABLA ALUMNO =============
                     case 12 -> {
                         dao.eliminarTablaAlumno();
                         System.out.println("Tabla alumno eliminada.");
                     }
 
+                    // ============= ELIMINAR TABLA CURSO =============
                     case 13 -> {
                         dao.eliminarTablaCurso();
                         System.out.println("Tabla curso eliminada.");
                     }
 
-                    // VOLVER
-
+                    // ============= VOLVER =============
                     case 0 ->
-                        System.out.println(
-                                "Volviendo al menú principal.");
+                        System.out.println("Volviendo al menu principal.");
 
                     default ->
-                        System.out.println("Opción incorrecta.");
+                        System.out.println("Opcion incorrecta.");
                 }
 
             } catch (Exception e) {
-                System.err.println("Error SQLite: " + e.getMessage());
-            }
-        }
-    }
-
-    // MENÚ ORACLE
-
-    private static void menuOracle(Scanner sc, InstitutoDAO dao) {
-
-        int opcion = -1;
-
-        while (opcion != 0) {
-
-            System.out.println("\n===== MENÚ ORACLE =====");
-            System.out.println("1. Crear tabla");
-            System.out.println("2. Insertar alumno");
-            System.out.println("3. Actualizar alumno");
-            System.out.println("4. Listar alumnos");
-            System.out.println("0. Volver");
-            System.out.print("Elige una opción: ");
-
-            opcion = Integer.parseInt(sc.nextLine());
-
-            try {
-
-                switch (opcion) {
-
-                    case 1 -> {
-                        dao.crearTabla();
-                        System.out.println("Tabla creada en Oracle");
-                    }
-
-                    case 2 -> System.out.println("Inserción Oracle - No implementado");
-
-                    case 3 -> System.out.println("Actualización Oracle - No implementado");
-
-                    case 4 -> System.out.println("Listado Oracle - No implementado");
-
-                    case 0 -> System.out.println("Volviendo al menú principal...");
-
-                    default -> System.out.println("Opción inválida.");
-                }
-
-            } catch (Exception e) {
-                System.err.println("Error Oracle: " + e.getMessage());
+                System.err.println("Error al ejecutar operacion: " + e.getMessage());
             }
         }
     }

@@ -176,15 +176,11 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     @Override
     public int insertarCurso(Curso curso) throws SQLException {
 
-        PreparedStatement ps = conn.prepareStatement("""
-                    INSERT INTO curso(nombre, descripcion,
-                    alumno_nombre, alumno_apellido)
-                    VALUES (?,?,?,?)
-                """);
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO curso(nombre, alumno_nombre, alumno_apellido) VALUES (?,?,?)");
 
         ps.setString(1, curso.getNombre());
-        ps.setString(3, curso.getAlumnoNombre());
-        ps.setString(4, curso.getAlumnoApellido());
+        ps.setString(2, curso.getAlumnoNombre());
+        ps.setString(3, curso.getAlumnoApellido());
 
         return ps.executeUpdate();
     }
@@ -195,7 +191,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
 
         final String query = "SELECT * FROM curso";
 
-        List<Curso> cursos = new ArrayList<>();
+        List<Curso> lista = new ArrayList<>();
         PreparedStatement ps = conn.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
 
@@ -206,12 +202,12 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
             String apellidoAlumno = rs.getString("alumno_apellido");
 
             Curso a = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
-            cursos.add(a);
+            lista.add(a);
         }
         rs.close();
         ps.close();
 
-        return cursos;
+        return lista;
 
     }
 

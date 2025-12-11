@@ -14,7 +14,7 @@ import es.etg.dam.DAO.InstitutoDAO;
 
 public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 
-    private final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
+    private final String URL = "jdbc:oracle:thin:@//localhost:1521/XEPDB1";
     String DATABASE_USER = "usuario";
     String DATABASE_PASS = "usuario";
     private final Connection conn;
@@ -29,42 +29,37 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     public void crearTabla() throws SQLException {
 
         String tablaAlumno = """
-                CREATE TABLE alumno (
-                    nombre VARCHAR2(50),
-                    apellido VARCHAR2(50),
-                    edad NUMBER,
-                    CONSTRAINT pk_alumno PRIMARY KEY (nombre, apellido)
-                )
-                """;
+            CREATE TABLE alumno (
+                nombre VARCHAR2(50),
+                apellido VARCHAR2(50),
+                edad NUMBER,
+                CONSTRAINT pk_alumno PRIMARY KEY (nombre, apellido)
+            )
+            """;
 
         String tablaCurso = """
-                CREATE TABLE curso (
-                    id NUMBER GENERATED ALWAYS AS IDENTITY,
-                    nombre VARCHAR2(50) NOT NULL,
-                    descripcion VARCHAR2(100),
-                    alumno_nombre VARCHAR2(50) NOT NULL,
-                    alumno_apellido VARCHAR2(50) NOT NULL,
-                    CONSTRAINT pk_curso PRIMARY KEY (id),
-                    CONSTRAINT fk_curso_alumno FOREIGN KEY (alumno_nombre, alumno_apellido)
-                        REFERENCES alumno(nombre, apellido)
-                        ON DELETE CASCADE
-                )
-                """;
+            CREATE TABLE curso (
+                id NUMBER GENERATED ALWAYS AS IDENTITY,
+                nombre VARCHAR2(50) NOT NULL,
+                descripcion VARCHAR2(100),
+                alumno_nombre VARCHAR2(50) NOT NULL,
+                alumno_apellido VARCHAR2(50) NOT NULL,
+                CONSTRAINT pk_curso PRIMARY KEY (id),
+                CONSTRAINT fk_curso_alumno FOREIGN KEY (alumno_nombre, alumno_apellido)
+                    REFERENCES alumno(nombre, apellido)
+                    ON DELETE CASCADE
+            )
+            """;
 
-        PreparedStatement ps1 = conn.prepareStatement(tablaAlumno);
-        PreparedStatement ps2 = conn.prepareStatement(tablaCurso);
-
-        try {
-            ps1.executeUpdate(tablaAlumno);
-        } catch (Exception e) {
-        }
-        try {
-            ps2.executeUpdate(tablaCurso);
-        } catch (Exception e) {
+        try (PreparedStatement ps = conn.prepareStatement(tablaAlumno)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
         }
 
-        ps1.close();
-        ps2.close();
+        try (PreparedStatement ps = conn.prepareStatement(tablaCurso)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+        }
     }
 
     // ================= ALUMNOS ===================
@@ -78,7 +73,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
             ps.setInt(3, alumno.getEdad());
 
             int filas = ps.executeUpdate();
-            ps.close();
             return filas;
         }
     }
@@ -96,7 +90,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
             }
 
             ps.executeBatch();
-            ps.close();
         }
 
         return alumnos.size();
@@ -112,7 +105,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
             ps.setString(3, alumno.getApellido());
 
             int filas = ps.executeUpdate();
-            ps.close();
             return filas;
         }
     }
@@ -126,7 +118,6 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
             ps.setString(2, alumno.getApellido());
 
             int filas = ps.executeUpdate();
-            ps.close();
             return filas;
         }
     }
@@ -148,9 +139,7 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
                     Alumno alumno = new Alumno(nombre, apellido, edad);
                     lista.add(alumno);
                 }
-                rs.close();
             }
-            ps.close();
         }
         return lista;
     }
@@ -175,29 +164,27 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
                     Alumno alumno = new Alumno(nom, ape, edad);
                     lista.add(alumno);
                 }
-
-                rs.close();
             }
-            ps.close();
         }
 
         return lista;
     }
 
-    // ==================== CURSOS ====================
+    // ============= CURSOS =============
     // INSERTAR CURSO
     @Override
     public int insertarCurso(Curso curso) throws SQLException {
 
-        int filas;
+        final String query = "INSERT INTO curso(nombre, alumno_nombre, alumno_apellido) VALUES (?, ?, ?)";
 
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO curso(nombre, alumno_nombre, alumno_apellido)VALUES (?,?,?,?)")) {
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
             ps.setString(1, curso.getNombre());
-            ps.setString(3, curso.getAlumnoNombre());
-            ps.setString(4, curso.getAlumnoApellido());
-            filas = ps.executeUpdate();
+            ps.setString(2, curso.getAlumnoNombre());
+            ps.setString(3, curso.getAlumnoApellido());
+
+            return ps.executeUpdate();
         }
-        return filas;
     }
 
     // LISTAR CURSO
@@ -206,21 +193,19 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 
         List<Curso> lista = new ArrayList<>();
 
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM curso")) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int id = rs.getInt("id");
-                    String nombre = rs.getString("nombre");
-                    String nombreAlumno = rs.getString("alumno_nombre");
-                    String apellidoAlumno = rs.getString("alumno_apellido");
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM curso"); ResultSet rs = ps.executeQuery()) {
 
-                    Curso a = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
-                    lista.add(a);
-                }
-                rs.close();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String nombreAlumno = rs.getString("alumno_nombre");
+                String apellidoAlumno = rs.getString("alumno_apellido");
+
+                Curso c = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
+                lista.add(c);
             }
-            ps.close();
         }
+
         return lista;
     }
 
@@ -230,28 +215,23 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 
         List<String> lista = new ArrayList<>();
 
-        try (PreparedStatement ps = conn.prepareStatement("""
-                SELECT a.nombre, a.apellido, c.nombre AS curso
-                FROM alumno a
-                JOIN curso c
-                ON a.nombre = c.alumno_nombre
-                AND a.apellido = c.alumno_apellido
-                """)) {
+        final String query = """
+            SELECT a.nombre, a.apellido, c.nombre AS curso
+            FROM alumno a
+            JOIN curso c
+            ON a.nombre = c.alumno_nombre
+            AND a.apellido = c.alumno_apellido
+            """;
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
+        try (PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
 
-                    String nombre = rs.getString("nombre");
-                    String apellido = rs.getString("apellido");
-                    String curso = rs.getString("curso");
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                String apellido = rs.getString("apellido");
+                String curso = rs.getString("curso");
 
-                    String registro = (nombre + " " + apellido + " " + curso);
-
-                    lista.add(registro);
-                }
-                rs.close();
+                lista.add(nombre + " " + apellido + " " + curso);
             }
-            ps.close();
         }
 
         return lista;
@@ -263,24 +243,31 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
 
         try (PreparedStatement ps = conn.prepareStatement(
                 "DELETE FROM curso WHERE id = ?")) {
-            ps.setInt(1, id);
 
-            int cursos = ps.executeUpdate();
-            ps.close();
-            return cursos;
+            ps.setInt(1, id);
+            return ps.executeUpdate();
         }
     }
 
+    // ELIMINAR LA TABLA ALUMNO
     @Override
     public void eliminarTablaAlumno() throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarTablaAlumno'");
+
+        final String query = "DROP TABLE alumno CASCADE CONSTRAINTS";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.execute();
+        }
     }
 
+    // ELIMINAR LA TABLA CURSO
     @Override
     public void eliminarTablaCurso() throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'eliminarTablaCurso'");
-    }
 
+        final String query = "DROP TABLE curso CASCADE CONSTRAINTS";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.execute();
+        }
+    }
 }
