@@ -29,27 +29,27 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     public void crearTabla() throws SQLException {
 
         String tablaAlumno = """
-            CREATE TABLE alumno (
-                nombre VARCHAR2(50),
-                apellido VARCHAR2(50),
-                edad NUMBER,
-                CONSTRAINT pk_alumno PRIMARY KEY (nombre, apellido)
-            )
-            """;
+                CREATE TABLE alumno (
+                    nombre VARCHAR2(50),
+                    apellido VARCHAR2(50),
+                    edad NUMBER,
+                    CONSTRAINT pk_alumno PRIMARY KEY (nombre, apellido)
+                )
+                """;
 
         String tablaCurso = """
-            CREATE TABLE curso (
-                id NUMBER GENERATED ALWAYS AS IDENTITY,
-                nombre VARCHAR2(50) NOT NULL,
-                descripcion VARCHAR2(100),
-                alumno_nombre VARCHAR2(50) NOT NULL,
-                alumno_apellido VARCHAR2(50) NOT NULL,
-                CONSTRAINT pk_curso PRIMARY KEY (id),
-                CONSTRAINT fk_curso_alumno FOREIGN KEY (alumno_nombre, alumno_apellido)
+                CREATE TABLE curso (
+                    id NUMBER GENERATED ALWAYS AS IDENTITY,
+                    nombre VARCHAR2(50) NOT NULL,
+                    descripcion VARCHAR2(100),
+                    alumno_nombre VARCHAR2(50) NOT NULL,
+                    alumno_apellido VARCHAR2(50) NOT NULL,
+                    CONSTRAINT pk_curso PRIMARY KEY (id),
+                    CONSTRAINT fk_curso_alumno FOREIGN KEY (alumno_nombre, alumno_apellido)
                     REFERENCES alumno(nombre, apellido)
                     ON DELETE CASCADE
-            )
-            """;
+                )
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(tablaAlumno)) {
             ps.executeUpdate();
@@ -67,7 +67,8 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     @Override
     public int insertar(Alumno alumno) throws SQLException {
 
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO alumno(nombre, apellido, edad) VALUES (?,?,?)")) {
+        try (PreparedStatement ps = conn
+                .prepareStatement("INSERT INTO alumno(nombre, apellido, edad) VALUES (?,?,?)")) {
             ps.setString(1, alumno.getNombre());
             ps.setString(2, alumno.getApellido());
             ps.setInt(3, alumno.getEdad());
@@ -81,7 +82,8 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     @Override
     public int insertar(List<Alumno> alumnos) throws SQLException {
 
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO alumno(nombre, apellido, edad) VALUES (?,?,?)")) {
+        try (PreparedStatement ps = conn
+                .prepareStatement("INSERT INTO alumno(nombre, apellido, edad) VALUES (?,?,?)")) {
             for (Alumno alumno : alumnos) {
                 ps.setString(1, alumno.getNombre());
                 ps.setString(2, alumno.getApellido());
@@ -99,7 +101,8 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
     @Override
     public int actualizar(Alumno alumno) throws SQLException {
 
-        try (PreparedStatement ps = conn.prepareStatement("UPDATE alumno SET edad = ? WHERE nombre = ? AND apellido = ?")) {
+        try (PreparedStatement ps = conn
+                .prepareStatement("UPDATE alumno SET edad = ? WHERE nombre = ? AND apellido = ?")) {
             ps.setInt(1, alumno.getEdad());
             ps.setString(2, alumno.getNombre());
             ps.setString(3, alumno.getApellido());
@@ -201,8 +204,8 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
                 String nombreAlumno = rs.getString("alumno_nombre");
                 String apellidoAlumno = rs.getString("alumno_apellido");
 
-                Curso c = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
-                lista.add(c);
+                Curso curso = new Curso(id, nombre, nombreAlumno, apellidoAlumno);
+                lista.add(curso);
             }
         }
 
@@ -216,12 +219,12 @@ public class InstitutoOracleXeDAOImp implements InstitutoDAO {
         List<String> lista = new ArrayList<>();
 
         final String query = """
-            SELECT a.nombre, a.apellido, c.nombre AS curso
-            FROM alumno a
-            JOIN curso c
-            ON a.nombre = c.alumno_nombre
-            AND a.apellido = c.alumno_apellido
-            """;
+                SELECT a.nombre, a.apellido, c.nombre AS curso
+                FROM alumno a
+                JOIN curso c
+                ON a.nombre = c.alumno_nombre
+                AND a.apellido = c.alumno_apellido
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(query); ResultSet rs = ps.executeQuery()) {
 

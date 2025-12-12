@@ -18,7 +18,7 @@ public class Main {
             Modo modo = seleccionarModo(sc);
 
             if (modo == null) {
-                System.out.println("Opcion invalida. Saliendo...");
+                System.out.println("Opcion invalida Saliendo...");
                 return;
             }
 
@@ -218,7 +218,8 @@ public class Main {
                         String nombreBuscar = sc.nextLine();
 
                         for (Alumno alumno : dao.buscarAlumnoPorNombre(nombreBuscar)) {
-                            System.out.println(alumno.getNombre() + " " + alumno.getApellido() + " " + alumno.getEdad());
+                            System.out
+                                    .println(alumno.getNombre() + " " + alumno.getApellido() + " " + alumno.getEdad());
                         }
                     }
 

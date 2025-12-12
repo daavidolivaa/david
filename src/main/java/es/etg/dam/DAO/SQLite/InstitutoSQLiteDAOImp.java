@@ -50,7 +50,7 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
                     alumno_nombre TEXT NOT NULL,
                     alumno_apellido TEXT NOT NULL,
                     FOREIGN KEY(alumno_nombre, alumno_apellido)
-                        REFERENCES alumno(nombre, apellido)
+                    REFERENCES alumno(nombre, apellido)
                 );
                 """;
 
@@ -176,7 +176,8 @@ public class InstitutoSQLiteDAOImp implements InstitutoDAO {
     @Override
     public int insertarCurso(Curso curso) throws SQLException {
 
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO curso(nombre, alumno_nombre, alumno_apellido) VALUES (?,?,?)");
+        PreparedStatement ps = conn
+                .prepareStatement("INSERT INTO curso(nombre, alumno_nombre, alumno_apellido) VALUES (?,?,?)");
 
         ps.setString(1, curso.getNombre());
         ps.setString(2, curso.getAlumnoNombre());
